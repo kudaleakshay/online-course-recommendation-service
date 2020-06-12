@@ -17,8 +17,55 @@
             <form action="" method="post">
                
                 <div class="form-group">
-                    <label for="pwd">Course Name:</label>
-                    <input type="text" style='width:400px' class="form-control" required='true' placeholder="Course Name" name="course">
+                    <label for="Name">Course Name:</label>
+                    <input type="text" style='width:400px' class="form-control" required='true' placeholder="Course Name" name="Name">
+                </div>
+
+                <div>
+                    <label for="Price">Price</label><br>
+
+                    <fieldset id="Price">
+                        <input type="radio" id="Free" name="Price" value="Free">
+                        <label for="Free">Free</label><br>
+                    
+                        <input type="radio" id="Paid" name="Price" value="Paid" checked="checked">
+                        <label for="Paid">Paid</label><br>
+                    </fieldset>    
+                </div>
+                <br>
+
+                <div>
+                    <label for="Level">Choose course level:</label><br>
+
+                    <input type="checkbox" name="Level" value="All Levels">
+                    <label for="All_Levels">All Levels</label><br>
+                    
+                    <input type="checkbox" name="Level" value="Beginner Level">
+                    <label for="Beginner_Level">Beginner Level</label><br>
+                    
+                    <input type="checkbox" name="Level" value="Intermediate Level">
+                    <label for="Intermediate_Level">Intermediate Level</label><br>
+
+                    <input type="checkbox" name="Level" value="Expert Level">
+                    <label for="Expert_Level">Expert Level</label><br><br>
+
+                </div>
+
+
+                <div>
+                    <label for="Duration">Video Duration:</label><br>
+
+                    <input type="checkbox" name="Duration" value="between 0 and 2">
+                    <label for="0-2 Hours">0-2 Hours</label><br>
+                    
+                    <input type="checkbox" name="Duration" value="between 3 and 6">
+                    <label for="3-6 Hours">3-6 Hours</label><br>
+                    
+                    <input type="checkbox" name="Duration" value="between 7 and 16">
+                    <label for="7-16 Hours">7-16 Hours</label><br>
+
+                    <input type="checkbox" name="Duration" value="> 17">
+                    <label for="17+ Hour">17+ Hours</label><br><br>
                 </div>
 
                 <div>
