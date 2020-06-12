@@ -1,0 +1,6 @@
+pip3 install virtualenv
+python -m venv venv_web_project
+venv_web_project\Scripts\activate
+pip3 install flask
+pip3 install flask-mysqldb
+pip3 install pyyaml
