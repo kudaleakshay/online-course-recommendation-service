@@ -27,10 +27,10 @@ def index():
 
 @app.route('/', methods=['POST'])
 def recommend():
-    course_details = request.form
+    input_details = request.form
     cur = mysql.connection.cursor()
 
-    sql_fetch_query = "select * from datasets_udemy_courses where course_title REGEXP \'" + course_details['Name']  + "\'"
+    sql_fetch_query = "select * from datasets_udemy_courses where course_title REGEXP \'" + input_details['Name']  + "\'"
     sql_secondary_query = "select * from datasets_udemy_courses where is_paid = 'True' ORDER BY num_lectures DESC"
     
     result_value = cur.execute(sql_fetch_query)
@@ -43,11 +43,11 @@ def recommend():
         result_details = cur.fetchall()
         cur.close()
         offset = random.randint(0,4)
-    return render_template('home.html', course_details = prediction(result_details, header_list, course_details, offset))
+    return render_template('home.html', course_details = prediction(result_details, header_list, input_details, offset))
     
 
 def prediction(course_details, headers_list, input_details, offset):
-    course_price = input_details['Price']
+    course_is_paid = input_details['Price']
     course_level = input_details.getlist('Level')
     course_duration = input_details.getlist('Duration')
     
@@ -57,14 +57,19 @@ def prediction(course_details, headers_list, input_details, offset):
     for ind in df.index: 
         score = 0
 
-        if course_price:
-            if df['is_paid'][ind] == course_price:
+        if course_is_paid:
+            if df['is_paid'][ind] == course_is_paid:
                 score +=1
+
+        if df['rating'][ind] > 4:
+                    score+=1
+                    
         if course_level:
             for level in course_level:
                 if df['level'][ind] == level: 
                     print(level)
                     score +=1
+
         if course_duration:
             for duration in course_duration:
                 lower, upper = duration.split('-')
