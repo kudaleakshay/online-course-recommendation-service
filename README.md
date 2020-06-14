@@ -5,7 +5,7 @@ pip3 install flask
 pip3 install flask-mysqldb
 
 # instll PyYaml
-pip install pyyaml
+pip3 install pyyaml
 
 # install virtual env for first time  
 pip3 install virtualenv
