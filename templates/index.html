@@ -6,13 +6,20 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+        
+        <script type="text/javascript">
+            function blockSpecialChar(e){
+                var k;
+                document.all ? k = e.keyCode : k = e.which;
+                return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8 || k == 32 || (k >= 48 && k <= 57) || (k == 35) || (k == 43));
+                }
+        </script>
     </head>
 
     <body>
 
         <div class="container">
-            <h2>Welcome to Recommendtion Service</h2>
+            <h2>Welcome to Online Course Recommendtion Service</h2>
             
             <form action="" method="post">
                
@@ -25,10 +32,10 @@
                     <label for="Price">Price</label><br>
 
                     <fieldset id="Price">
-                        <input type="radio" id="Free" name="Price" value="Free">
+                        <input type="radio" id="Free" name="Price" value="False">
                         <label for="Free">Free</label><br>
                     
-                        <input type="radio" id="Paid" name="Price" value="Paid" checked="checked">
+                        <input type="radio" id="Paid" name="Price" value="True" checked="checked">
                         <label for="Paid">Paid</label><br>
                     </fieldset>    
                 </div>
@@ -55,21 +62,21 @@
                 <div>
                     <label for="Duration">Video Duration:</label><br>
 
-                    <input type="checkbox" name="Duration" value="between 0 and 2">
+                    <input type="checkbox" name="Duration" value="0-2">
                     <label for="0-2 Hours">0-2 Hours</label><br>
                     
-                    <input type="checkbox" name="Duration" value="between 3 and 6">
+                    <input type="checkbox" name="Duration" value="3-6">
                     <label for="3-6 Hours">3-6 Hours</label><br>
                     
-                    <input type="checkbox" name="Duration" value="between 7 and 16">
+                    <input type="checkbox" name="Duration" value="7-16">
                     <label for="7-16 Hours">7-16 Hours</label><br>
 
-                    <input type="checkbox" name="Duration" value="> 17">
+                    <input type="checkbox" name="Duration" value="17-99">
                     <label for="17+ Hour">17+ Hours</label><br><br>
                 </div>
 
-                <div>
-                    <input type="submit" value="Submit">
+                <div class="form-group">
+                    <button  type="submit" class="btn btn-primary" value="Submit">Submit</button>
                 </div>
             </form>
 

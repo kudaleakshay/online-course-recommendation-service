@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
+import pandas as pd
 import yaml
+import random
 
 
 app = Flask(__name__)
@@ -15,6 +17,7 @@ app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_database']
 
+header_list = ['course_id', 'course_title', 'url', 'is_paid','price', 'num_subscribers', 'num_reviews', 'num_lectures','level', 'content_duration', 'published_timestamp','subject','rating']
 
 mysql = MySQL(app)
 
@@ -25,50 +28,57 @@ def index():
 @app.route('/', methods=['POST'])
 def recommend():
     course_details = request.form
-    filter_sub_query = get_filter_sub_query(course_details)
-
     cur = mysql.connection.cursor()
 
-    sql_fetch_query = "select * from datasets_udemy_courses where course_title REGEXP \'" + course_details['Name'] + "\' and " + filter_sub_query
-
-    print(course_details['Name'])
-    print(sql_fetch_query)
-
+    sql_fetch_query = "select * from datasets_udemy_courses where course_title REGEXP \'" + course_details['Name']  + "\'"
+    sql_secondary_query = "select * from datasets_udemy_courses where is_paid = 'True' ORDER BY num_lectures DESC"
+    
     result_value = cur.execute(sql_fetch_query)
     if result_value > 0:
-        course_details = cur.fetchall()
+        result_details = cur.fetchall()
         cur.close()
-        return render_template('home.html', course_details = course_details)
+        offset = 0
+    else:
+        cur.execute(sql_secondary_query)
+        result_details = cur.fetchall()
+        cur.close()
+        offset = random.randint(0,4)
+    return render_template('home.html', course_details = prediction(result_details, header_list, course_details, offset))
     
-    return 'No data found'
 
-def get_filter_sub_query(course_details):
-    course_price = course_details['Price']
-    course_level = course_details.getlist('Level')
-    course_duration = course_details.getlist('Duration')
+def prediction(course_details, headers_list, input_details, offset):
+    course_price = input_details['Price']
+    course_level = input_details.getlist('Level')
+    course_duration = input_details.getlist('Duration')
+    
+    df = pd.DataFrame(course_details, columns = headers_list)
+    df['score'] = 0 
 
-    filters_list=[]
-    if course_price: 
-       filters_list.append(get_price_type_sub_query(course_price))
-    if course_level:
-        filters_list.append(get_level_sub_query(course_level))
-    if course_duration:
-        filters_list.append(get_duration_sub_query(course_duration))
+    for ind in df.index: 
+        score = 0
 
-    filter_sub_query = ' and '.join(filters_list)
-        
-    print(filter_sub_query)
+        if course_price:
+            if df['is_paid'][ind] == course_price:
+                score +=1
+        if course_level:
+            for level in course_level:
+                if df['level'][ind] == level: 
+                    print(level)
+                    score +=1
+        if course_duration:
+            for duration in course_duration:
+                lower, upper = duration.split('-')
+                if df['content_duration'][ind] > int(lower) and df['content_duration'][ind] < int(upper):
+                    print(duration)
+                    score += 1
+                
+        df['score'][ind] = score
+ 
+    df1 = df.sort_values('score',ascending = False).iloc[offset:10]
+    records = df1.to_records(index=False)
+    result = tuple(records)
+    return result
 
-    return filter_sub_query
-
-def get_price_type_sub_query(course_price):
-    return f'is_paid = \'{course_price == "Paid"}\''
-
-def get_level_sub_query(course_level):
-    return "level in (" + ','.join(map(lambda course: f"'{course}'", course_level)) + ")"
-
-def get_duration_sub_query(course_duration):
-    return "(" + ' or '.join(map(lambda duration: f"content_duration {duration}", course_duration)) + ")"
 
 if __name__ == '__main__':
     app.run(debug=True)
