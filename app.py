@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_mysqldb import MySQL
+from flaskext.mysql import MySQL
 import pandas as pd
 import yaml
 import random
@@ -12,14 +12,15 @@ with open('db.yaml') as f:
     
     db = yaml.load(f, Loader=yaml.FullLoader)
 
-app.config['MYSQL_HOST'] = db['mysql_host']
-app.config['MYSQL_USER'] = db['mysql_user']
-app.config['MYSQL_PASSWORD'] = db['mysql_password']
-app.config['MYSQL_DB'] = db['mysql_database']
+app.config['MYSQL_DATABASE_HOST'] = db['mysql_host']
+app.config['MYSQL_DATABASE_USER'] = db['mysql_user']
+app.config['MYSQL_DATABASE_PASSWORD'] = db['mysql_password']
+app.config['MYSQL_DATABASE_DB'] = db['mysql_database']
 
 header_list = ['course_id', 'course_title', 'url', 'is_paid','price', 'num_subscribers', 'num_reviews', 'num_lectures','level', 'content_duration', 'published_timestamp','subject','rating']
 
 mysql = MySQL(app)
+mysql.init_app(app)
 
 @app.route('/', methods=['GET'])
 def index():
@@ -28,7 +29,9 @@ def index():
 @app.route('/', methods=['POST'])
 def recommend():
     input_details = request.form
-    cur = mysql.connection.cursor()
+
+    conn = mysql.connect()
+    cur = conn.cursor()
 
     sql_fetch_query = "select * from datasets_udemy_courses where course_title REGEXP \'" + input_details['Name']  + "\'"
     sql_secondary_query = "select * from datasets_udemy_courses where is_paid = 'True' ORDER BY num_lectures DESC"
