@@ -1,58 +1,142 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<style>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 80%;
-  margin-left:auto;margin-right:auto;
-}
+  <title>Recommendations</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style/recommendation.css') }}">
 
-td {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: center;
-  background-color: #00608D;
-  color: white;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-</style>
 </head>
+
 <body>
 
-<h2 style="text-align:center;">You might like following courses</h2></br>
+  {% if match_courses_data %}
+  <br><br>
+  <h3 style="text-align:center;">ONLINE COURSES FOR {{title}}</h3></br>
 
-<table>
-  <tr>
-    <th>Course</th>
-    <th>Level</th>
-    <th>Duration</th>
-    <th>Rating</th>
-  </tr>
-  {% for course in course_details %}
+  <table>
+    <tr>
+      <th>Course</th>
+      <th>Level</th>
+      <th>Duration</th>
+      <th>Rating</th>
+    </tr>
+    {% for course in match_courses_data %}
 
-  <tr>
-    <td> {{course[1]}} </td>
-    <td> {{course[8]}} </td>
-    <td> {{course[9]}} hours</td>
-    <td> {{course[12]}} </td>
-  </tr>
-  {% endfor %}
-</table>
+    <tr>
+      <td> {{course[1]}} </td>
+      <td> {{course[10]}} </td>
+      <td> {{course[11]}} hours</td>
+      <td> {{course[13]}} </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br><br>
+  <hr>
+  {% else %}
+
+  <div class="form-container">
+    <form action="" method="post">
+      <h3 style="color:Tomato;">No data found for this course...Please try other courses</h3>
+      <div class="form-group">
+        <br><br>
+        <input type="text" style="width:400px" class="form-control" required="true" placeholder="Enter Course Name"
+          name="Name" onkeypress="return blockSpecialChar(event)">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary" value="Submit">Show Courses</button>
+      </div>
+    </form>
+
+  </div>
+  <hr>
+
+  {% endif %}
+
+
+  {% if rating_courses %}
+
+  <h3 style="text-align:center;">YOU MIGHT LIKE FOLLOWING TOP RATED COURSES IN {{title}}</h3></br>
+
+  <table>
+    <tr>
+      <th>Course</th>
+      <th>Level</th>
+      <th>Duration</th>
+      <th>Rating</th>
+    </tr>
+    {% for course in rating_courses %}
+
+    <tr>
+      <td> {{course[1]}} </td>
+      <td> {{course[10]}} </td>
+      <td> {{course[11]}} hours</td>
+      <td> {{course[13]}} </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br><br>
+
+  <hr>
+  {% endif %}
+
+
+
+  {% if popular_courses %}
+
+  <h3 style="text-align:center;">YOU CAN TRY THESE POPULR COURSES IN {{title}}</h3></br>
+
+  <table>
+    <tr>
+      <th>Course</th>
+      <th>Total Subscribers</th>
+      <th>Total Lectures</th>
+      <th>Rating</th>
+    </tr>
+    {% for course in popular_courses %}
+
+    <tr>
+      <td> {{course[1]}} </td>
+      <td> {{course[8]}} </td>
+      <td> {{course[9]}} </td>
+      <td> {{course[13]}} </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br><br>
+  <hr>
+  {% endif %}
+
+
+
+  {% if similar_courses %}
+
+  <h3 style="text-align:center;">YOU CAN LEARN THESE SIMILAR COURSES</h3></br>
+
+  <table>
+    <tr>
+      <th>Course</th>
+      <th>Level</th>
+      <th>Duration</th>
+      <th>Rating</th>
+    </tr>
+    {% for course in similar_courses %}
+
+    <tr>
+      <td> {{course[1]}} </td>
+      <td> {{course[10]}} </td>
+      <td> {{course[11]}} hours</td>
+      <td> {{course[13]}} </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br><br>
+  <hr>
+  {% endif %}
 
 
 </body>
+
 </html>
-
-
-

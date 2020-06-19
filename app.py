@@ -3,13 +3,15 @@ from flaskext.mysql import MySQL
 import pandas as pd
 import yaml
 import random
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import sigmoid_kernel
 
 
 app = Flask(__name__)
 
 # Configure db
 with open('db.yaml') as f:
-    
+
     db = yaml.load(f, Loader=yaml.FullLoader)
 
 app.config['MYSQL_DATABASE_HOST'] = db['mysql_host']
@@ -17,75 +19,128 @@ app.config['MYSQL_DATABASE_USER'] = db['mysql_user']
 app.config['MYSQL_DATABASE_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DATABASE_DB'] = db['mysql_database']
 
-header_list = ['course_id', 'course_title', 'url', 'is_paid','price', 'num_subscribers', 'num_reviews', 'num_lectures','level', 'content_duration', 'published_timestamp','subject','rating']
+db_table = db['mysql_table']
+print(db_table)
+
+header_list = ['course_id', 'course_title', 'Category_1', 'Category_2', 'url', 'num_reviews', 'is_paid',
+               'price', 'num_subscribers', 'num_lectures', 'level', 'content_duration', 'published_timestamp', 'rating']
 
 mysql = MySQL(app)
 mysql.init_app(app)
+
 
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
+
 @app.route('/', methods=['POST'])
 def recommend():
     input_details = request.form
+    input_name = input_details['Name']
 
     conn = mysql.connect()
     cur = conn.cursor()
 
-    sql_fetch_query = "select * from datasets_udemy_courses where course_title REGEXP \'" + input_details['Name']  + "\'"
-    sql_secondary_query = "select * from datasets_udemy_courses where is_paid = 'True' ORDER BY num_lectures DESC"
-    
-    result_value = cur.execute(sql_fetch_query)
-    if result_value > 0:
-        result_details = cur.fetchall()
+    sql_get_match_courses = f'select * from {db_table} where course_title REGEXP \'{input_name}\''
+
+    match_courses = cur.execute(sql_get_match_courses)
+    if match_courses > 0:
+        dataset = cur.fetchall()
         cur.close()
-        offset = 0
+
+        course_df = pd.DataFrame(dataset, columns=header_list)
+        course_df = course_df.drop_duplicates()
+
+        category = dataset[0][2]  # Categories column
+
+        match_courses_data = get_match_courses(course_df)
+        sort_rating_courses = get_rating_courses(course_df)
+        sort_popular_courses = get_popular_courses(course_df)
+
+        similar_courses = ''
+        # Data should be more than 2 for computing similar courses based on sigmoid_kernel.
+        if match_courses > 2:
+            try:
+                similar_courses = get_similar_courses(dataset, category)
+            except:
+                print("Oops! Error occurred.")
+
+        return render_template('home.html', title=input_name, match_courses_data=match_courses_data,
+                               rating_courses=sort_rating_courses,
+                               popular_courses=sort_popular_courses,
+                               similar_courses=similar_courses
+                               )
+
     else:
-        cur.execute(sql_secondary_query)
-        result_details = cur.fetchall()
-        cur.close()
-        offset = random.randint(0,4)
-    return render_template('home.html', course_details = prediction(result_details, header_list, input_details, offset))
-    
+        return render_template('home.html')
 
-def prediction(course_details, headers_list, input_details, offset):
-    course_is_paid = input_details['Price']
-    course_level = input_details.getlist('Level')
-    course_duration = input_details.getlist('Duration')
-    
-    df = pd.DataFrame(course_details, columns = headers_list)
-    df['score'] = 0 
 
-    for ind in df.index: 
-        score = 0
+def get_match_courses(course_df):
+    course_df = course_df.sort_values('course_title', ascending=False).head(10)
+    return [tuple(course) for course in course_df.values]
 
-        if course_is_paid:
-            if df['is_paid'][ind] == course_is_paid:
-                score +=1
 
-        if df['rating'][ind] > 4:
-                    score+=1
-                    
-        if course_level:
-            for level in course_level:
-                if df['level'][ind] == level: 
-                    print(level)
-                    score +=1
+def get_rating_courses(course_df):
+    course_df = course_df.sort_values('rating', ascending=False).head(5)
+    return [tuple(course) for course in course_df.values]
 
-        if course_duration:
-            for duration in course_duration:
-                lower, upper = duration.split('-')
-                if df['content_duration'][ind] > int(lower) and df['content_duration'][ind] < int(upper):
-                    print(duration)
-                    score += 1
-                
-        df['score'][ind] = score
- 
-    df1 = df.sort_values('score',ascending = False).iloc[offset:10]
-    records = df1.to_records(index=False)
-    result = tuple(records)
-    return result
+
+def get_popular_courses(course_df):
+    course_df = course_df.sort_values(
+        'num_subscribers', ascending=False).head(5)
+    return [tuple(course) for course in course_df.values]
+
+
+def get_similar_courses(dataset, category):
+    course_df = pd.DataFrame(dataset, columns=header_list)
+
+    print(len(course_df))
+    course_df = course_df.drop_duplicates()
+    print(len(course_df))
+
+    course_cleaned_df = course_df
+    course_cleaned_df.head()
+
+    course_cleaned_df.info()
+
+    tfv = TfidfVectorizer(min_df=3,
+                          max_features=None,
+                          strip_accents='unicode',
+                          analyzer='word',
+                          token_pattern=r'\w{1,}',
+                          ngram_range=(1, 3),
+                          stop_words='english')
+
+    tfv_matrix = tfv.fit_transform(course_cleaned_df['course_title'])
+
+    # Compute the sigmoid kernel
+    sig = sigmoid_kernel(tfv_matrix, tfv_matrix)
+    indices = pd.Series(course_cleaned_df.index,
+                        index=course_cleaned_df['Category_1']).drop_duplicates()
+
+    # Get the index corresponding to original_title
+    idx = indices[category]
+
+    # Get the pairwsie similarity scores
+    sig_scores = list(enumerate(sig[idx]))
+
+    # Sort the Course
+    sig_scores = sorted(sig_scores, key=lambda x: x[1].all(), reverse=True)
+
+    # Scores of the 10 most similar movies
+    sig_scores = sig_scores[1:11]
+
+    # Course indices
+    course_indices = [i[0] for i in sig_scores]
+
+    # Top 10 most similar Course
+    print(course_cleaned_df['Category_1'].iloc[course_indices])
+
+    # return course_cleaned_df['course_title'].iloc[course_indices]
+    df1 = course_cleaned_df.iloc[course_indices]
+    print(course_cleaned_df.iloc[course_indices])
+    return [tuple(course) for course in df1.values]
 
 
 if __name__ == '__main__':

@@ -1,87 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-    
-    <head>
-        <title>Welcome</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        
-        <script type="text/javascript">
-            function blockSpecialChar(e){
-                var k;
-                document.all ? k = e.keyCode : k = e.which;
-                return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8 || k == 32 || (k >= 48 && k <= 57) || (k == 35) || (k == 43));
-                }
-        </script>
-    </head>
 
-    <body>
+<head>
+    <title>Welcome</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style/mainpage.css') }}">
 
-        <div class="container">
-            <h2>Welcome to Online Course Recommendtion Service</h2>
-            
-            <form action="" method="post">
-               
-                <div class="form-group">
-                    <label for="Name">Course Name:</label>
-                    <input type="text" style='width:400px' class="form-control" required='true' placeholder="Course Name" name="Name">
-                </div>
+    <script type="text/javascript">
+        function blockSpecialChar(e) {
+            var k;
+            document.all ? k = e.keyCode : k = e.which;
+            return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8 || k == 32 || (k >= 48 && k <= 57) || (k == 35) || (k == 43));
+        }
+    </script>
+</head>
 
-                <div>
-                    <label for="Price">Price</label><br>
+<body>
+    <div class="form-container">
+        <form action="" method="post">
+            <h2>Welcome to Online Courses Recommendtion Service</h2>
+            <div class="form-group">
+                <br><br>
+                <input type="text" style="width:400px" class="form-control" required="true"
+                    placeholder="Enter Course Name" name="Name" onkeypress="return blockSpecialChar(event)">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" value="Submit">Show Courses</button>
+            </div>
+        </form>
 
-                    <fieldset id="Price">
-                        <input type="radio" id="Free" name="Price" value="False">
-                        <label for="Free">Free</label><br>
-                    
-                        <input type="radio" id="Paid" name="Price" value="True" checked="checked">
-                        <label for="Paid">Paid</label><br>
-                    </fieldset>    
-                </div>
-                <br>
+    </div>
 
-                <div>
-                    <label for="Level">Choose course level:</label><br>
-
-                    <input type="checkbox" name="Level" value="All Levels">
-                    <label for="All_Levels">All Levels</label><br>
-                    
-                    <input type="checkbox" name="Level" value="Beginner Level">
-                    <label for="Beginner_Level">Beginner Level</label><br>
-                    
-                    <input type="checkbox" name="Level" value="Intermediate Level">
-                    <label for="Intermediate_Level">Intermediate Level</label><br>
-
-                    <input type="checkbox" name="Level" value="Expert Level">
-                    <label for="Expert_Level">Expert Level</label><br><br>
-
-                </div>
-
-
-                <div>
-                    <label for="Duration">Video Duration:</label><br>
-
-                    <input type="checkbox" name="Duration" value="0-2">
-                    <label for="0-2 Hours">0-2 Hours</label><br>
-                    
-                    <input type="checkbox" name="Duration" value="3-6">
-                    <label for="3-6 Hours">3-6 Hours</label><br>
-                    
-                    <input type="checkbox" name="Duration" value="7-16">
-                    <label for="7-16 Hours">7-16 Hours</label><br>
-
-                    <input type="checkbox" name="Duration" value="17-99">
-                    <label for="17+ Hour">17+ Hours</label><br><br>
-                </div>
-
-                <div class="form-group">
-                    <button  type="submit" class="btn btn-primary" value="Submit">Submit</button>
-                </div>
-            </form>
-
-        </div>
-
-    </body>
+</body>
 
 </html>
