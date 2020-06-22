@@ -1,7 +1,5 @@
 
 body {
-  /* The image used
-  background-image: url("back.jpg"); */
 
   /* Full height */
   height: 100%;
@@ -58,4 +56,21 @@ body {
 hr {
   border-top: 1px dotted red;
   margin: 30px;
+}
+
+.block {
+  display: block;
+  border: none;
+  background-color: #868686;
+  color: white;
+  padding: 14px 28px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 50%;
+  margin-left:auto;margin-right:auto;
+}
+
+.block:hover {
+  background-color: #00608D;
+  color: white;
 }

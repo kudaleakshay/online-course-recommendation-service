@@ -19,8 +19,8 @@
 
 <body>
     <div class="form-container">
+        <h2>Welcome to Online Courses Recommendtion Service</h2>
         <form action="" method="post">
-            <h2>Welcome to Online Courses Recommendtion Service</h2>
             <div class="form-group">
                 <br><br>
                 <input type="text" style="width:400px" class="form-control" required="true"
@@ -29,10 +29,44 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-primary" value="Submit">Show Courses</button>
             </div>
+            <br><br>
+        </form>
+
+        <h4>------------- OR --------------</h4>
+
+        <form action="/category" method="post">
+            <div class="form-group">
+                <br><br>
+                <label style="  margin-left:120px;" for=" Select course Category">Select course
+                    Category</label>
+                <select style="width:400px" class="form-control" required="true" placeholder="Enter Course Category"
+                    name="Category" id="Category">
+                    <option value="Academics">Academics</option>
+                    <option value="Business">Business</option>
+                    <option value="Cloud Computing">Cloud Computing</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Design">Design</option>
+                    <option value="Development">Development</option>
+                    <option value="Finance&Accounting">Finance & Accounting</option>
+                    <option value="Human Resource">Human Resource</option>
+                    <option value="IT & Software">IT & Software</option>
+                    <option value="IT Operation">IT Operation</option>
+                    <option value="Language">Language</option>
+                    <option value="Leadership & Management">Leadership & Management</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Office Productivity">Office Productivity</option>
+                    <option value="Personal Development">Personal Development</option>
+                    <option value="Photography">Photography</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Web Development">Web Development</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" value="Submit">Show Courses</button>
+            </div>
         </form>
 
     </div>
-
 </body>
 
 </html>

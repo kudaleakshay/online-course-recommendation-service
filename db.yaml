@@ -12,10 +12,7 @@ mysql_table : udemy_courses
 # mysql_table : datasets_udemy_courses
 
 
-
-
 # mysql_host : 'localhost'
 # mysql_user : 'root'
 # mysql_password : ''
 # mysql_database : 'mysqldemo'
-
