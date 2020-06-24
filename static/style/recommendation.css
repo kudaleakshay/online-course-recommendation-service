@@ -74,3 +74,12 @@ hr {
   background-color: #00608D;
   color: white;
 }
+
+.card:hover {
+  background-color: #00608D !important;
+  color: white;
+}
+
+/* .checked {
+  color: orange;
+} */

@@ -5,8 +5,10 @@
   <title>Recommendations</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style/recommendation.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 
@@ -14,27 +16,37 @@
 
   {% if match_courses_data %}
   <br><br>
-  <h3 style="text-align:center;">ONLINE COURSES FOR {{title}}</h3></br>
-
-  <table>
-    <tr>
-      <th>Course</th>
-      <th>Level</th>
-      <th>Duration</th>
-      <th>Rating</th>
-    </tr>
-    {% for course in match_courses_data %}
-
-    <tr>
-      <td> {{course[1]}} </td>
-      <td> {{course[10]}} </td>
-      <td> {{course[11]}} hours</td>
-      <td> {{course[13]}} </td>
-    </tr>
-    {% endfor %}
-  </table>
-  <br><br>
+  <h3 style="text-align:center;">ONLINE COURSES FOR {{title}}</h3>
   <hr>
+
+  <div class="container">
+    <div class="row hidden-md-up">
+      {% for course in match_courses_data %}
+
+      <div class="col-md-4" style="padding-bottom: 1rem;">
+        <div class="card" style="background-color:silver">
+          <div class="card-body">
+            <h5 class="card-title">{{course[1]}}</h5>
+            <h6 class="card-subtitle text-muted">{{course[10]}}</h6>
+            <p class="card-text p-y-1">
+              Duration: <b>{{course[11]}} hours </b>
+            </p>
+            <p class="card-text p-y-1">
+              Rating:
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              {{course[13]}}
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
   {% else %}
 
   <div class="form-container">
@@ -56,88 +68,75 @@
   {% endif %}
 
 
-  {% if rating_courses %}
-
-  <h3 style="text-align:center;">YOU MIGHT LIKE FOLLOWING TOP RATED COURSES IN {{title}}</h3></br>
-
-  <table>
-    <tr>
-      <th>Course</th>
-      <th>Level</th>
-      <th>Duration</th>
-      <th>Rating</th>
-    </tr>
-    {% for course in rating_courses %}
-
-    <tr>
-      <td> {{course[1]}} </td>
-      <td> {{course[10]}} </td>
-      <td> {{course[11]}} hours</td>
-      <td> {{course[13]}} </td>
-    </tr>
-    {% endfor %}
-  </table>
-  <br><br>
-  <hr>
-  {% endif %}
-
-
-
-
-  {% if popular_courses %}
-
-  <h3 style="text-align:center;">YOU CAN TRY THESE POPULR COURSES IN {{title}}</h3></br>
-
-  <table>
-    <tr>
-      <th>Course</th>
-      <th>Total Subscribers</th>
-      <th>Total Lectures</th>
-      <th>Rating</th>
-    </tr>
-    {% for course in popular_courses %}
-
-    <tr>
-      <td> {{course[1]}} </td>
-      <td> {{course[8]}} </td>
-      <td> {{course[9]}} </td>
-      <td> {{course[13]}} </td>
-    </tr>
-    {% endfor %}
-  </table>
-  <br><br>
-  <hr>
-  {% endif %}
-
 
   {% if similar_courses %}
+  <hr>
+  <h3 style="text-align:center;">RECOMMENDED COURSES IN THIS CATEGORY</h3></br>
 
-  <h3 style="text-align:center;">YOU CAN LEARN THESE SIMILAR COURSES</h3></br>
+  <div class="container">
+    <div class="row hidden-md-up">
+      {% for course in similar_courses %}
 
-  <table>
-    <tr>
-      <th>Course</th>
-      <th>Level</th>
-      <th>Duration</th>
-      <th>Rating</th>
-    </tr>
-    {% for course in similar_courses %}
-
-    <tr>
-      <td> {{course[1]}} </td>
-      <td> {{course[10]}} </td>
-      <td> {{course[11]}} hours</td>
-      <td> {{course[13]}} </td>
-    </tr>
-    {% endfor %}
-  </table>
+      <div class="col-md-4" style="padding-bottom: 1rem;">
+        <div class="card" style="background-color:silver">
+          <div class="card-body">
+            <h5 class="card-title">{{course[1]}}</h5>
+            <h6 class="card-subtitle text-muted">{{course[10]}}</h6>
+            <p class="card-text p-y-1">
+              Duration: <b>{{course[11]}} hours </b>
+            </p>
+            <p class="card-text p-y-1">
+              Rating:
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              {{course[13]}}
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
   <br><br>
   <hr>
 
   {% endif %}
 
-  <button class="block" onclick="location.href='/';">Search Another Courses</button>
+  {% if categories %}
 
+  <h3 style="text-align:center;">OTHER SIMILAR CATEGORIES RELATED TO {{title}} </h3></br>
+
+  <div class="container">
+    <div class="row hidden-md-up">
+      {% for category in categories %}
+
+      <div class="col-md-6" style="padding-bottom: 1rem;">
+        <div class="card" style="background-color:silver; align-items: center;">
+          <div class="card-body">
+            <h5 class="card-title" style="text-align:center;">{{category}}</h5>
+
+            <form action="/category" method="post">
+              <input type="hidden" name="Category" value="{{category|safe}}">
+              <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+                Courses</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <br><br>
+
+
+  {% endif %}
+
+  <hr>
+  <button class="block" onclick="location.href='/';">Search Another Courses</button>
   <hr>
 
 </body>

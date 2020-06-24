@@ -59,3 +59,12 @@ th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+.topnav {
+  overflow: hidden;
+  background-color: #00608D;
+  font-size: 30px;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}

@@ -4,6 +4,7 @@ import pandas as pd
 import yaml
 import random
 import re
+from collections import Counter
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import sigmoid_kernel
 
@@ -39,7 +40,7 @@ def index():
 @app.route('/', methods=['POST'])
 def recommend_courses():
     input_details = request.form
-    input_name = input_details['Name']
+    input_name = input_details['Name'].strip()
 
     conn = mysql.connect()
     cur = conn.cursor()
@@ -51,28 +52,32 @@ def recommend_courses():
         dataset = cur.fetchall()
         cur.close()
 
+        match_categories = []
+        for var in dataset:
+            match_categories.append(dataset[dataset.index(var)][3].strip())
+
+        print("Most frequent: ")
+        print(most_frequent(match_categories))
+
         global course_df
         course_df = pd.DataFrame(dataset, columns=header_list)
         course_df = course_df.drop_duplicates()
 
-        category = dataset[0][2]  # Category column
+        category = most_frequent(match_categories)
+        match_categories = list(set(match_categories))
+        match_categories.remove(category)
 
         match_courses_data = get_match_courses()
-        sort_rating_courses = get_rating_courses()
-        sort_popular_courses = get_popular_courses()
 
         similar_courses = ''
-        # Data should be more than 2 for computing similar courses based on sigmoid_kernel.
-        if match_courses > 2:
-            try:
-                similar_courses = get_similar_courses(dataset, category)
-            except:
-                print("Oops! Error occurred.")
 
-        return render_template('home.html', title=input_name, match_courses_data=match_courses_data,
-                               rating_courses=sort_rating_courses,
-                               popular_courses=sort_popular_courses,
-                               similar_courses=similar_courses
+        try:
+            similar_courses = get_categorywise_similar_courses(category)
+        except:
+            print("Oops! Error occurred.")
+
+        return render_template('home.html', title=input_name.upper(), match_courses_data=match_courses_data,
+                               similar_courses=similar_courses, categories=match_categories
                                )
 
     else:
@@ -82,12 +87,12 @@ def recommend_courses():
 @app.route('/category', methods=['POST'])
 def recommend_categorywise_courses():
     input_details = request.form
-    input_category = input_details['Category']
+    input_category = input_details['Category'].strip()
 
     conn = mysql.connect()
     cur = conn.cursor()
 
-    sql_get_match_courses = f'select * from {db_table} where Category_1 = \'{input_category}\' ORDER BY RAND()'
+    sql_get_match_courses = f'select * from {db_table} where Category_1 like \'%{input_category}%\' or Category_2 like \'%{input_category}%\' ORDER BY RAND()'
 
     match_courses = cur.execute(sql_get_match_courses)
     if match_courses > 0:
@@ -101,20 +106,9 @@ def recommend_categorywise_courses():
         category = input_category
 
         match_courses_data = get_match_courses()
-        sort_rating_courses = get_rating_courses()
-        sort_popular_courses = get_popular_courses()
-
         similar_courses = ''
-        # Data should be more than 2 for computing similar courses based on sigmoid_kernel.
-        if match_courses > 2:
-            try:
-                similar_courses = get_similar_courses(dataset, category)
-            except:
-                print("Oops! Error occurred.")
 
-        return render_template('home.html', title=category, match_courses_data=match_courses_data,
-                               rating_courses=sort_rating_courses,
-                               popular_courses=sort_popular_courses,
+        return render_template('home.html', title=category.upper(), match_courses_data=match_courses_data,
                                similar_courses=similar_courses
                                )
 
@@ -122,95 +116,42 @@ def recommend_categorywise_courses():
         return render_template('home.html')
 
 
+def most_frequent(List):
+    # return max(set(List), key=List.count)
+    occurence_count = Counter(List)
+    return occurence_count.most_common(1)[0][0]
+
+
+def get_categorywise_similar_courses(category):
+    conn = mysql.connect()
+    cur = conn.cursor()
+
+    global course_df
+    sql_get_match_categories = f'select * from {db_table} where Category_1 = \'%{category}%\' or Category_2 like \'%{category}%\''
+
+    match_courses = cur.execute(sql_get_match_categories)
+    if match_courses > 0:
+        category_dataset = cur.fetchall()
+        cur.close()
+
+        category_df = pd.DataFrame(category_dataset, columns=header_list)
+        category_df = category_df.drop_duplicates()
+
+        category_df = pd.concat([category_df,
+                                 course_df]).drop_duplicates(keep=False)
+
+        category_df = category_df.head(40)
+        return [tuple(course) for course in category_df.values]
+
+
 def get_match_courses():
-    # course_df = course_df.head(10)
     global course_df
-    print(len(course_df))
-    selected_course_df = course_df.head(10)
-    course_df = pd.concat([course_df,
-                           selected_course_df]).drop_duplicates(keep=False)
-
-    print("get_match_courses: ")
-    print(len(course_df))
-    return [tuple(course) for course in selected_course_df.values]
-
-
-def get_rating_courses():
-    global course_df
-    print(len(course_df))
     selected_course_df = course_df.sort_values(
-        'rating', ascending=False).head(5)
-
-    course_df = pd.concat([course_df,
-                           selected_course_df]).drop_duplicates(keep=False)
-    print("get_rating_courses: ")
-    print(len(course_df))
-    return [tuple(course) for course in selected_course_df.values]
-
-
-def get_popular_courses():
-    global course_df
-    print(len(course_df))
-    selected_course_df = course_df.sort_values(
-        'num_subscribers', ascending=False).head(5)
-
+        'rating', ascending=False).head(20)
     course_df = pd.concat([course_df,
                            selected_course_df]).drop_duplicates(keep=False)
 
-    print("get_popular_courses: ")
-    print(len(course_df))
     return [tuple(course) for course in selected_course_df.values]
-
-
-def get_similar_courses(dataset, category):
-    course_df = pd.DataFrame(dataset, columns=header_list)
-
-    print(len(course_df))
-    course_df = course_df.drop_duplicates()
-    print(len(course_df))
-
-    course_cleaned_df = course_df
-    course_cleaned_df.head()
-
-    course_cleaned_df.info()
-
-    tfv = TfidfVectorizer(min_df=3,
-                          max_features=None,
-                          strip_accents='unicode',
-                          analyzer='word',
-                          token_pattern=r'\w{1,}',
-                          ngram_range=(1, 3),
-                          stop_words='english')
-
-    tfv_matrix = tfv.fit_transform(course_cleaned_df['course_title'])
-
-    # Compute the sigmoid kernel
-    sig = sigmoid_kernel(tfv_matrix, tfv_matrix)
-    indices = pd.Series(course_cleaned_df.index,
-                        index=course_cleaned_df['Category_1']).drop_duplicates()
-
-    # Get the index corresponding to original_title
-    idx = indices[category]
-
-    # Get the pairwsie similarity scores
-    sig_scores = list(enumerate(sig[idx]))
-
-    # Sort the Course
-    sig_scores = sorted(sig_scores, key=lambda x: x[1].all(), reverse=True)
-
-    # Scores of the 10 most similar movies
-    sig_scores = sig_scores[1:11]
-
-    # Course indices
-    course_indices = [i[0] for i in sig_scores]
-
-    # Top 10 most similar Course
-    print(course_cleaned_df['Category_1'].iloc[course_indices])
-
-    # return course_cleaned_df['course_title'].iloc[course_indices]
-    df1 = course_cleaned_df.iloc[course_indices]
-    print(course_cleaned_df.iloc[course_indices])
-    return [tuple(course) for course in df1.values]
 
 
 if __name__ == '__main__':
