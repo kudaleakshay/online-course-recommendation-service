@@ -4,13 +4,8 @@
 # Check docker images
 	> docker images
 
-# Run docker images or create container
-	> docker run -it recommendation_system
-
-
 # Run container or docker image in deaamon mode, so outside world can acess
-	> docker run -it -d -p 5000:5000 webapp
-
+	> docker run -it -d -p 5000:5000 recommendation_system
 
 # Check running container
 	> docker ps	 
