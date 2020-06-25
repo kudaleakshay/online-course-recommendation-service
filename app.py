@@ -5,8 +5,6 @@ import yaml
 import random
 import re
 from collections import Counter
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import sigmoid_kernel
 
 
 app = Flask(__name__)

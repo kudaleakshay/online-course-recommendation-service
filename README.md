@@ -1,23 +1,19 @@
-# Python_web_project  
-This is shared Python web project repository for Group task
+# Build docker file 
+	> docker build -t recommendation_system .
 
-# install virtual env for first time  
-pip3 install virtualenv
+# Check docker images
+	> docker images
 
-# creates environment venv_web_project (you can give any name)  
-python -m venv venv_web_project
+# Run docker images or create container
+	> docker run -it recommendation_system
 
-# activate your env in windows  
-venv_web_project\Scripts\activate
 
-# activate your env in Linux/Mac
-Source [venv_web_project\Scripts\activate] #Path to env folder
+# Run container or docker image in deaamon mode, so outside world can acess
+	> docker run -it -d -p 5000:5000 webapp
 
-# install flask  
-pip3 install flask
 
-# install Mysql Database Connector
-pip3 install flask-mysqldb
+# Check running container
+	> docker ps	 
 
-# instll PyYaml
-pip install pyyaml
+# Open Browser and open 
+    > http://127.0.0.1:5000/    

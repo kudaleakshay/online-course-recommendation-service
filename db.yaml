@@ -4,15 +4,3 @@ mysql_password : 'rootadmin'
 mysql_database : 'dataset'
 mysql_table : udemy_courses
 
-
-# mysql_host : 'aws-db.c870dqshvtvk.ap-south-1.rds.amazonaws.com'
-# mysql_user : 'admin'
-# mysql_password : 'rootadmin'
-# mysql_database : 'mysqldemo'
-# mysql_table : datasets_udemy_courses
-
-
-# mysql_host : 'localhost'
-# mysql_user : 'root'
-# mysql_password : ''
-# mysql_database : 'mysqldemo'
