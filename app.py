@@ -23,7 +23,11 @@ db_table = db['mysql_table']
 print(db_table)
 
 header_list = ['course_id', 'course_title', 'Category_1', 'Category_2', 'url', 'num_reviews', 'is_paid',
-               'price', 'num_subscribers', 'num_lectures', 'level', 'content_duration', 'published_timestamp', 'rating']
+               'price', 'num_subscribers', 'num_lectures', 'level', 'content_duration', 'published_timestamp', 'rating', 'language', 'is_subtitle']
+
+# header_list = ['course_id', 'course_title', 'Category_1', 'Category_2', 'url', 'num_reviews', 'is_paid',
+#                'price', 'num_subscribers', 'num_lectures', 'level', 'content_duration', 'published_timestamp', 'rating']
+
 
 mysql = MySQL(app)
 mysql.init_app(app)
@@ -112,6 +116,95 @@ def recommend_categorywise_courses():
 
     else:
         return render_template('home.html')
+
+
+@app.route('/suggestions', methods=['POST'])
+def suggest_courses():
+    input_details = request.form
+    input_course_id = input_details['selected_course']
+
+    conn = mysql.connect()
+    cur = conn.cursor()
+
+    sql_get_selected_course = f'select * from {db_table} where course_id = \'{input_course_id}\''
+
+    if cur.execute(sql_get_selected_course) > 0:
+        dataset = cur.fetchall()
+
+        print(type(dataset))
+        print(dataset[0][1])
+
+        title = dataset[0][1]
+        category = dataset[0][3]
+        level = dataset[0][10]
+        rating = dataset[0][13]
+        language = dataset[0][14]
+        is_subtitle = dataset[0][15]
+
+        print(category)
+        print(level)
+        print(rating)
+        print(language)
+        print(is_subtitle)
+
+        sql_get_similar_course = f'select * from {db_table} where Category_1 like \'%{category}%\' or Category_2 like \'%{category}%\''
+
+        if cur.execute(sql_get_similar_course) > 0:
+            course_dataset = cur.fetchall()
+            cur.close()
+
+            print(len(course_dataset))
+
+            course_df = pd.DataFrame(course_dataset, columns=header_list)
+            course_df = course_df.drop_duplicates()
+
+            other_languge_df = pd.DataFrame(
+                course_dataset, columns=header_list)
+            other_languge_df = course_df.drop_duplicates()
+
+            other_level_df = pd.DataFrame(course_dataset, columns=header_list)
+            other_level_df = course_df.drop_duplicates()
+
+            course_df.query(
+                f'language == \'{language}\' and is_subtitle == \'{is_subtitle}\' and level == \'{level}\'', inplace=True)
+
+            other_languge_df.query(
+                f'language != \'{language}\' and is_subtitle == \'{is_subtitle}\' and level == \'{level}\'', inplace=True)
+
+            other_level_df.query(
+                f'language != \'{language}\' and is_subtitle == \'{is_subtitle}\' and level != \'{level}\'', inplace=True)
+
+            print(len(course_df))
+            lower = rating - 1
+            upper = rating + 1
+            course_df.query(
+                f'rating > {lower}and rating < {upper}', inplace=True)
+            print(len(course_df))
+
+            if len(course_df) <= 2:
+                course_df = pd.DataFrame(course_dataset, columns=header_list)
+                course_df = course_df.drop_duplicates()
+                similar_courses = [tuple(course)
+                                   for course in course_df.values]
+                return render_template('home.html', title=title.upper(),
+                                       match_courses_data=similar_courses
+                                       )
+
+            similar_courses = [tuple(course) for course in course_df.values]
+            similar_courses_other_language = [
+                tuple(course) for course in other_languge_df.values]
+            similar_courses_other_levels = [
+                tuple(course) for course in other_level_df.values]
+
+            print(similar_courses_other_language)
+
+            return render_template('home.html', title=title.upper(),
+                                   match_courses_data=similar_courses,
+                                   similar_courses_other_language=similar_courses_other_language,
+                                   similar_courses_other_levels=similar_courses_other_levels
+                                   )
+
+    return render_template('home.html')
 
 
 def most_frequent(List):

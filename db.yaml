@@ -1,6 +1,5 @@
 mysql_host : 'aws-db.c870dqshvtvk.ap-south-1.rds.amazonaws.com'
 mysql_user : 'admin'
 mysql_password : 'rootadmin'
-mysql_database : 'dataset'
+mysql_database : 'dataset2'
 mysql_table : udemy_courses
-

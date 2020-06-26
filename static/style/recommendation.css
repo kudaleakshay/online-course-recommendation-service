@@ -76,10 +76,70 @@ hr {
 }
 
 .card:hover {
-  background-color: #00608D !important;
+  background-color: #9e9e9e !important;
   color: white;
 }
 
-/* .checked {
+.suggestionContainer {
+  overflow-x: auto;
+  display: flex;
+}
+
+.suggestionContainer .card {
+  width: 20rem;
+  margin: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+.badge {
+  padding: 0.25rem 1rem;
+  background: #005fff;
+  border-radius: 2rem;
+  color: #fff;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.badge-level{
+  background: #3d3d3d;
+}
+
+.badge-subtitle{
+  background: #b5d400;
+  color: #000;
+}
+
+
+.badge-Japanese{
+  background: orange;
+}
+
+.badge-Hindi{
+  background: black;
+}
+
+.badge-Spanish{
+  background: tomato;
+}
+
+.badge-English{
+  background: green;
+}
+
+.card hr {
+  border-top: 1px solid #000;
+  margin: 0.75rem 0;
+}
+
+.card p {
+  margin-bottom: 0.25rem;
+}
+
+.checked {
   color: orange;
-} */
+}
+
+.btn-primary {
+  margin: 0.75rem 0;
+}

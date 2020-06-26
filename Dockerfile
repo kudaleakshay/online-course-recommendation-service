@@ -1,8 +1,4 @@
-from ubuntu:latest
-
-RUN apt-get -y update && \
-	apt-get -y install python3 && \
-	apt-get install -y python3-pip
+from python:3.8-slim
 
 WORKDIR /app
 

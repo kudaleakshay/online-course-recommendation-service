@@ -18,34 +18,53 @@
   <br><br>
   <h3 style="text-align:center;">ONLINE COURSES FOR {{title}}</h3>
   <hr>
+  <h4 style="text-align:center;"><b>Courses to get you started</b></h4><br>
+  <div class="suggestionContainer">
+    {% for course in match_courses_data %}
 
-  <div class="container">
-    <div class="row hidden-md-up">
-      {% for course in match_courses_data %}
-
-      <div class="col-md-4" style="padding-bottom: 1rem;">
-        <div class="card" style="background-color:silver">
-          <div class="card-body">
-            <h5 class="card-title">{{course[1]}}</h5>
-            <h6 class="card-subtitle text-muted">{{course[10]}}</h6>
-            <p class="card-text p-y-1">
-              Duration: <b>{{course[11]}} hours </b>
-            </p>
-            <p class="card-text p-y-1">
-              Rating:
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              {{course[13]}}
-            </p>
-          </div>
-        </div>
+    <div class="card" style="background-color:#EEE">
+      <div class="card-body">
+        <h5 class="card-title"><b>{{course[1]}}</b></h5>
+        <hr>
+        <p class="card-text p-y-1">
+          Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
+        </p>
+        <p class="card-text p-y-1">
+          Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
+        </p>
+        <p class="card-text p-y-1">
+          Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <b>{{course[13]}}</b>
+          {% for n in range((course[13])|int) %}
+          <span class="fa fa-star checked"></span>
+          {% endfor %}
+        </p>
+        <p class="card-text p-y-1">
+          Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
+            {{course[10]}}</span>
+        </p>
+        <p class="card-text p-y-1">
+          Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
+        </p>
+        <p class="card-text p-y-1">
+          Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">
+            {% if match_courses_data %}
+            Available
+            {% else %}
+            Not Available
+            {% endif %}
+          </span>
+        </p>
+        <form action="/suggestions" method="post">
+          <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
+          <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+            Courses</button>
+        </form>
       </div>
-      {% endfor %}
     </div>
+    {% endfor %}
   </div>
+
 
   {% else %}
 
@@ -71,39 +90,164 @@
 
   {% if similar_courses %}
   <hr>
-  <h3 style="text-align:center;">RECOMMENDED COURSES IN THIS CATEGORY</h3></br>
+  <h3 style="text-align:center;">SIMILAR COURSES IN THIS CATEGORY</h3></br>
 
-  <div class="container">
-    <div class="row hidden-md-up">
-      {% for course in similar_courses %}
-
-      <div class="col-md-4" style="padding-bottom: 1rem;">
-        <div class="card" style="background-color:silver">
-          <div class="card-body">
-            <h5 class="card-title">{{course[1]}}</h5>
-            <h6 class="card-subtitle text-muted">{{course[10]}}</h6>
-            <p class="card-text p-y-1">
-              Duration: <b>{{course[11]}} hours </b>
-            </p>
-            <p class="card-text p-y-1">
-              Rating:
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              <span class="fa fa-star checked"></span>
-              {{course[13]}}
-            </p>
-          </div>
-        </div>
+  <div class="suggestionContainer">
+    {% for course in similar_courses %}
+    <div class="card" style="background-color:#EEE">
+      <div class="card-body">
+        <h5 class="card-title"><b>{{course[1]}}</b></h5>
+        <hr>
+        <p class="card-text p-y-1">
+          Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
+        </p>
+        <p class="card-text p-y-1">
+          Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
+        </p>
+        <p class="card-text p-y-1">
+          Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <b>{{course[13]}}</b>
+          {% for n in range((course[13])|int) %}
+          <span class="fa fa-star checked"></span>
+          {% endfor %}
+        </p>
+        <p class="card-text p-y-1">
+          Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
+            {{course[10]}}</span>
+        </p>
+        <p class="card-text p-y-1">
+          Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
+        </p>
+        <p class="card-text p-y-1">
+          Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">
+            {% if match_courses_data %}
+            Available
+            {% else %}
+            Not Available
+            {% endif %}
+          </span>
+        </p>
+        <form action="/suggestions" method="post">
+          <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
+          <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+            Courses</button>
+        </form>
       </div>
-      {% endfor %}
     </div>
+    {% endfor %}
   </div>
   <br><br>
   <hr>
 
   {% endif %}
+
+
+  {% if similar_courses_other_language %}
+  <hr>
+  <h3 style="text-align:center;">SIMILAR COURSES IN OTHER LANGUAGE</h3></br>
+
+  <div class="suggestionContainer">
+    {% for course in similar_courses_other_language %}
+
+    <div class="card" style="background-color: #EEE">
+      <div class="card-body">
+        <h5 class="card-title"><b>{{course[1]}}</b></h5>
+        <hr>
+        <p class="card-text p-y-1">
+          Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
+        </p>
+        <p class="card-text p-y-1">
+          Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
+        </p>
+        <p class="card-text p-y-1">
+          Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <b>{{course[13]}}</b>
+          {% for n in range((course[13])|int) %}
+          <span class="fa fa-star checked"></span>
+          {% endfor %}
+        </p>
+        <p class="card-text p-y-1">
+          Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
+            {{course[10]}}</span>
+        </p>
+        <p class="card-text p-y-1">
+          Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
+        </p>
+        <p class="card-text p-y-1">
+          Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">
+            {% if match_courses_data %}
+            Available
+            {% else %}
+            Not Available
+            {% endif %}
+          </span>
+        </p>
+        <form action="/suggestions" method="post">
+          <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
+          <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+            Courses</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <br><br>
+
+  {% endif %}
+
+  {% if similar_courses_other_levels %}
+  <hr>
+  <h3 style="text-align:center;">SIMILAR COURSES IN OTHER LEVELS</h3></br>
+
+  <div class="suggestionContainer">
+    {% for course in similar_courses_other_levels %}
+
+    <div class="card" style="background-color: #EEE">
+      <div class="card-body">
+        <h5 class="card-title"><b>{{course[1]}}</b></h5>
+        <hr>
+        <p class="card-text p-y-1">
+          Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
+        </p>
+        <p class="card-text p-y-1">
+          Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
+        </p>
+        <p class="card-text p-y-1">
+          Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <b>{{course[13]}}</b>
+          {% for n in range((course[13])|int) %}
+          <span class="fa fa-star checked"></span>
+          {% endfor %}
+        </p>
+        <p class="card-text p-y-1">
+          Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
+            {{course[10]}}</span>
+        </p>
+        <p class="card-text p-y-1">
+          Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
+        </p>
+        <p class="card-text p-y-1">
+          Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">
+            {% if match_courses_data %}
+            Available
+            {% else %}
+            Not Available
+            {% endif %}
+          </span>
+        </p>
+        <form action="/suggestions" method="post">
+          <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
+          <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+            Courses</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <br><br>
+
+  {% endif %}
+
 
   {% if categories %}
 
