@@ -17,9 +17,7 @@
   <div class="topnav">
     <h4>Online Courses Recommendtion Service</h4>
   </div>
-  <div class="secondary_nav">
-    <h6>Keep your skills on point | Stay tuned to see latest course recommendations</h6>
-  </div>
+
 
 
   {% if match_courses_data %}
@@ -29,40 +27,60 @@
   <h5 style="text-align:center;">(Please select any of the following course to get similar courses)</h5>
   <br>
   <h4 class="big_block"><b>Courses to get you started</b></h4>
-  <h6 class="metadata">These courses are visible because you search for {{title}}</h6><br>
+  <h6><span class="metadata">These courses are visible because you search for {{title}}</span></h6><br>
   <div class="suggestionContainer">
     {% for course in match_courses_data %}
 
-    <div class="card" style="background-color:#EEE">
+    <div class="card recommendationCard">
       <div class="card-body">
         <h6 class="card-title"><b>{{course[1]}}</b></h6>
         <hr>
-        <p class="card-text p-y-1">
-          Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
-        </p>
-        <p class="card-text p-y-1">
-          Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
-        </p>
-        <p class="card-text p-y-1">
-          Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <b>{{course[13]}}</b>
-          {% for n in range((course[13])|int) %}
-          <span class="fa fa-star checked"></span>
-          {% endfor %}
-        </p>
-        <p class="card-text p-y-1">
-          Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
-            {{course[10]}}</span>
-        </p>
-        <p class="card-text p-y-1">
-          Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
-        </p>
-        <p class="card-text p-y-1">
-          Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">{{course[15]}}</span>
+        <table class="noBoderTable">
+          <tr>
+            <th>Domain</th>
+            <td>{{course[3]}}</td>
+          </tr>
+          <tr>
+            <th>Duration</th>
+            <td>{{'%0.2f' % course[11]|float}} hours </td>
+          </tr>
+          <tr>
+            <th>Rating</th>
+            <td>{{course[13]}}
+              {% for n in range((course[13])|int) %}
+              <span class="fa fa-star checked"></span>
+              {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <th>Level</th>
+            <td><span class="badge badge-level">
+                {{course[10]}}</span></td>
+          </tr>
+          <tr>
+            <th>Language</th>
+            <td><span class="badge badge-{{course[14]}}"> {{course[14]}}</span></td>
+          </tr>
+          <tr>
+            <th>Subtitle</th>
+            <td><span>
+                {% if course[15].lower() == 'true' %}
+                Available
+                {% else %}
+                Un-available
+                {% endif %}
+              </span></td>
+          </tr>
+        </table>
         </p>
         <form action="/suggestions" method="post">
-          <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
-          <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+          <input type="hidden" name="title" value="{{course[1]|safe}}">
+          <input type="hidden" name="category" value="{{course[3]|safe}}">
+          <input type="hidden" name="level" value="{{course[10]|safe}}">
+          <input type="hidden" name="rating" value="{{course[13]|safe}}">
+          <input type="hidden" name="language" value="{{course[14]|safe}}">
+          <input type="hidden" name="is_subtitle" value="{{course[15]|safe}}">
+          <button type=" submit" class="btn btn-primary" value="Submit">Show
             Courses</button>
         </form>
       </div>
@@ -96,42 +114,60 @@
   {% if similar_courses_in_category %}
   <hr>
   <h4 class="big_block"><b>SIMILAR COURSES IN THIS CATEGORY</b></h4>
-  <h6 class="metadata">These Courses Are Visible Because of same category
-  </h6>
+  <h6><span class="metadata">These Courses Are Visible Because of same category</span></h6>
   <br>
   <div class="suggestionContainer">
     {% for course in similar_courses_in_category %}
-    <div class="card" style="background-color:#EEE">
+    <div class="card recommendationCard">
       <div class="card-body">
         <h6 class="card-title"><b>{{course[1]}}</b></h6>
         <hr>
-        <p class="card-text p-y-1">
-          Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
-        </p>
-        <p class="card-text p-y-1">
-          Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
-        </p>
-        <p class="card-text p-y-1">
-          Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <b>{{course[13]}}</b>
-          {% for n in range((course[13])|int) %}
-          <span class="fa fa-star checked"></span>
-          {% endfor %}
-        </p>
-        <p class="card-text p-y-1">
-          Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
-            {{course[10]}}</span>
-        </p>
-        <p class="card-text p-y-1">
-          Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
-        </p>
-        <p class="card-text p-y-1">
-          Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">{{course[15]}}</span>
-        </p>
+        <table class="noBoderTable">
+          <tr>
+            <th>Domain</th>
+            <td>{{course[3]}}</td>
+          </tr>
+          <tr>
+            <th>Duration</th>
+            <td>{{'%0.2f' % course[11]|float}} hours </td>
+          </tr>
+          <tr>
+            <th>Rating</th>
+            <td>{{course[13]}}
+              {% for n in range((course[13])|int) %}
+              <span class="fa fa-star checked"></span>
+              {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <th>Level</th>
+            <td><span class="badge badge-level">
+                {{course[10]}}</span></td>
+          </tr>
+          <tr>
+            <th>Language</th>
+            <td><span class="badge badge-{{course[14]}}"> {{course[14]}}</span></td>
+          </tr>
+          <tr>
+            <th>Subtitle</th>
+            <td><span>
+                {% if course[15].lower() == 'true' %}
+                Available
+                {% else %}
+                Un-available
+                {% endif %}
+              </span></td>
+          </tr>
+        </table>
         </p>
         <form action="/suggestions" method="post">
-          <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
-          <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+          <input type="hidden" name="title" value="{{course[1]|safe}}">
+          <input type="hidden" name="category" value="{{course[3]|safe}}">
+          <input type="hidden" name="level" value="{{course[10]|safe}}">
+          <input type="hidden" name="rating" value="{{course[13]|safe}}">
+          <input type="hidden" name="language" value="{{course[14]|safe}}">
+          <input type="hidden" name="is_subtitle" value="{{course[15]|safe}}">
+          <button type=" submit" class="btn btn-primary" value="Submit">Show
             Courses</button>
         </form>
       </div>
@@ -152,7 +188,7 @@
       {% for category in categories %}
 
       <div class="col-md-6" style="padding-bottom: 1rem;">
-        <div class="card" style="background-color:#EEE; align-items: center;">
+        <div class="categoryCard" style="background-color:#EEE; align-items: center;">
           <div class="card-body">
             <h6 class="card-title" style="text-align:center;">{{category}}</h6>
 

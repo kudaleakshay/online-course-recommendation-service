@@ -20,7 +20,6 @@ app.config['MYSQL_DATABASE_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DATABASE_DB'] = db['mysql_database']
 
 db_table = db['mysql_table']
-print(db_table)
 
 # Headers for dataset
 header_list = ['course_id', 'course_title', 'Category_1', 'Category_2', 'url', 'num_reviews', 'is_paid',
@@ -151,101 +150,82 @@ def suggest_courses():
     # get data from form
     input_details = request.form
 
-    # get selected_course from form data
-    input_course_id = input_details['selected_course']
+    # get selected_course detils from form data
+    title = input_details['title']
+    category = input_details['category']
+    level = input_details['level']
+    rating = float(input_details['rating'])
+    language = input_details['language']
+    is_subtitle = input_details['is_subtitle']
 
     # connnect to mysql DB
     conn = mysql.connect()
     cur = conn.cursor()
 
     # SQL query for fetching data from DB
-    sql_get_selected_course = f'select * from {db_table} where course_id = \'{input_course_id}\''
+    sql_get_similar_course = f'select * from {db_table} where Category_1 like \'%{category}%\' or Category_2 like \'%{category}%\''
 
-    # If any course match with selected_course
-    if cur.execute(sql_get_selected_course) > 0:
+    # If any course match with similar courses
+    if cur.execute(sql_get_similar_course) > 0:
 
         # fetch all data from SQL query
-        dataset = cur.fetchall()
+        course_dataset = cur.fetchall()
+        cur.close()
 
-        # set values for filtering
-        title = dataset[0][1]
-        category = dataset[0][3]
-        level = dataset[0][10]
-        rating = dataset[0][13]
-        language = dataset[0][14]
-        is_subtitle = dataset[0][15]
+        # Convert data into pandas
+        course_df = pd.DataFrame(course_dataset, columns=header_list)
+        course_df = course_df.drop_duplicates()
 
-        # SQL query for fetching data from DB
-        sql_get_similar_course = f'select * from {db_table} where Category_1 like \'%{category}%\' or Category_2 like \'%{category}%\''
+        # Convert data into pandas
+        other_languge_df = pd.DataFrame(
+            course_dataset, columns=header_list)
+        other_languge_df = course_df.drop_duplicates()
 
-        # If any course match with similar courses
-        if cur.execute(sql_get_similar_course) > 0:
+        # Convert data into pandas
+        other_level_df = pd.DataFrame(course_dataset, columns=header_list)
+        other_level_df = course_df.drop_duplicates()
 
-            # fetch all data from SQL query
-            course_dataset = cur.fetchall()
-            cur.close()
+        # filter data with query
+        course_df.query(
+            f'language == \'{language}\' and is_subtitle == \'{is_subtitle}\' and level == \'{level}\'', inplace=True)
+        other_languge_df.query(
+            f'language != \'{language}\' and is_subtitle == \'{is_subtitle}\' and level == \'{level}\'', inplace=True)
+        other_level_df.query(
+            f'language == \'{language}\' and is_subtitle == \'{is_subtitle}\' and level != \'{level}\'', inplace=True)
+
+        # Add rating boundries
+        lower = rating - 1
+        upper = rating + 1
+        course_df.query(
+            f'rating > {lower} and rating < {upper}', inplace=True)
+
+        # If only 2 courses are there then remove filters
+        if len(course_df) <= 2:
 
             # Convert data into pandas
             course_df = pd.DataFrame(course_dataset, columns=header_list)
             course_df = course_df.drop_duplicates()
 
-            # Convert data into pandas
-            other_languge_df = pd.DataFrame(
-                course_dataset, columns=header_list)
-            other_languge_df = course_df.drop_duplicates()
-
-            # Convert data into pandas
-            other_level_df = pd.DataFrame(course_dataset, columns=header_list)
-            other_level_df = course_df.drop_duplicates()
-
-            # filter data with query
-            course_df.query(
-                f'language == \'{language}\' and is_subtitle == \'{is_subtitle}\' and level == \'{level}\'', inplace=True)
-
-            other_languge_df.query(
-                f'language != \'{language}\' and is_subtitle == \'{is_subtitle}\' and level == \'{level}\'', inplace=True)
-
-            other_level_df.query(
-                f'language != \'{language}\' and is_subtitle == \'{is_subtitle}\' and level != \'{level}\'', inplace=True)
-
-            # Add rating boundries
-            lower = rating - 1
-            upper = rating + 1
-            course_df.query(
-                f'rating > {lower} and rating < {upper}', inplace=True)
-
-            # If only 2 courses are there then remove filters
-            if len(course_df) <= 2:
-
-                # Convert data into pandas
-                course_df = pd.DataFrame(course_dataset, columns=header_list)
-                course_df = course_df.drop_duplicates()
-
-                # convert into tuples
-                similar_courses = [tuple(course)
-                                   for course in course_df.values]
-
-                # send data to html file for rendering
-                return render_template('recommendations.html', title=title.upper(),
-                                       match_courses_data=similar_courses
-                                       )
-
-            similar_courses = [tuple(course) for course in course_df.values]
-
-            similar_courses_other_language = [
-                tuple(course) for course in other_languge_df.values]
-
-            similar_courses_other_levels = [
-                tuple(course) for course in other_level_df.values]
-
-            print(similar_courses_other_language)
+            # convert into tuples
+            similar_courses = [tuple(course)
+                               for course in course_df.values]
 
             # send data to html file for rendering
             return render_template('recommendations.html', title=title.upper(),
-                                   match_courses_data=similar_courses,
-                                   similar_courses_other_language=similar_courses_other_language,
-                                   similar_courses_other_levels=similar_courses_other_levels
+                                   match_courses_data=similar_courses
                                    )
+        similar_courses = [tuple(course) for course in course_df.values]
+        similar_courses_other_language = [
+            tuple(course) for course in other_languge_df.values]
+        similar_courses_other_levels = [
+            tuple(course) for course in other_level_df.values]
+
+        # send data to html file for rendering
+        return render_template('recommendations.html', title=title.upper(),
+                               match_courses_data=similar_courses,
+                               similar_courses_other_language=similar_courses_other_language,
+                               similar_courses_other_levels=similar_courses_other_levels
+                               )
 
     return render_template('home.html')
 

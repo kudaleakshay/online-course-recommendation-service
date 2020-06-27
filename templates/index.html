@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Welcome</title>
+    <title>Recommendtion System</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -18,30 +18,56 @@
 </head>
 
 <body>
-    <div class="main-container">
-        <div class="topnav">
-            <h2>Online Courses Recommendtion Service</h2>
-        </div>
+    <div class="topnav">
+        <h2>Online Courses Recommendtion Service</h2>
+    </div>
 
-        <div class="form-container">
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <h3>Welcome, You can serch for online courses or select course category from below</h3>
-                    <form action="" method="post">
-                        <div class="form-group searchbar-wrapper">
-                            <br><br>
-                            <input type="text" class="form-control search-input" required="true"
-                                placeholder="Enter Course Name" name="Name" onkeypress="return blockSpecialChar(event)">
-                            <button type="submit" class="search-button" value="Submit">
-                                <i class="fa fa-search" style="padding-bottom: 8px;"></i>
-                            </button>
-                        </div>
-                        <br><br>
-                    </form>
+    <div class="search-container">
+        <section class="search-wrapper">
+            <h1 style="color: white; font-size: 4rem;">Welcome,</h1>
+            <h3> You can search for online courses. Choose from thousands of online courses now.</h3>
+            <form action="" method="post">
+                <div class="search-form-group">
+                    <input type="text" class="search-input" required="true" placeholder="Enter Course Name" name="Name"
+                        onkeypress="return blockSpecialChar(event)">
+                    <button type="submit" class="search-button" value="Submit">
+                        <i class="fa fa-search" style="padding-bottom: 8px;"></i>
+                    </button>
                 </div>
-            </div>
-
+            </form>
+        </section>
+    </div>
+    <div class="category-block" style="text-align: center;">
+        <br /><br />
+        <h1 styele="font-size: 4rem; ">SEARCH COURSES BY CATEGORY</h1>
+        <div class=" category-container">
+            <form action="/category" method="post">
+                <select style="width:400px;" class="form-control" required="true" placeholder="Enter Course Category"
+                    name="Category" id="Category">
+                    <option value="Academics">Academics</option>
+                    <option value="Business">Business</option>
+                    <option value="Cloud Computing">Cloud Computing</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Design">Design</option>
+                    <option value="Development">Development</option>
+                    <option value="Finance&Accounting">Finance & Accounting</option>
+                    <option value="Human Resource">Human Resource</option>
+                    <option value="IT & Software">IT & Software</option>
+                    <option value="IT Operation">IT Operation</option>
+                    <option value="Language">Language</option>
+                    <option value="Leadership & Management">Leadership & Management</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Office Productivity">Office Productivity</option>
+                    <option value="Personal Development">Personal Development</option>
+                    <option value="Photography">Photography</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Web Development">Web Development</option>
+                </select>
+                <button type="submit" class="category-btn" value="Submit">Show
+                    Courses</button>
+            </form>
         </div>
+
     </div>
 </body>
 
