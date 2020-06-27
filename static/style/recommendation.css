@@ -23,35 +23,6 @@ body {
     align-items: center;
   }
   
-  table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 80%;
-    margin-left:auto;margin-right:auto;
-  }
-  
-  td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-  }
-  
-  th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: center;
-    background-color: #00608D;
-    color: white;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #dddddd;
-  }
-
-  tr:nth-child(odd) {
-    background-color: #fff;
-  }
-
   /* Thick red border */
 hr {
   border-top: 1px dotted red;
@@ -61,7 +32,7 @@ hr {
 .block {
   display: block;
   border: none;
-  background-color: #868686;
+  background: linear-gradient(220deg,#EC5252 -30%,#6E1A52 70%);
   color: white;
   padding: 14px 28px;
   font-size: 18px;
@@ -71,7 +42,7 @@ hr {
 }
 
 .block:hover {
-  background-color: #00608D;
+  background: linear-gradient(220deg,#bd4141 -30%,#411030 70%);
   color: white;
 }
 
@@ -89,6 +60,16 @@ hr {
   width: 20rem;
   margin: 0 0.5rem;
   flex-shrink: 0;
+}
+
+.metadata {
+  padding: 0.25rem 1rem;
+  background: linear-gradient(220deg,#EC5252 -30%,#6E1A52 70%);
+  border-radius: 2rem;
+  color: #fff;
+  font-size: 0.875rem;
+  text-transform: capitalize;
+  margin:5px;
 }
 
 .badge {
@@ -133,7 +114,8 @@ hr {
 }
 
 .card p {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
 }
 
 .checked {
@@ -142,4 +124,30 @@ hr {
 
 .btn-primary {
   margin: 0.75rem 0;
+  text-transform: capitalize;
+}
+
+.topnav {
+  overflow: hidden;
+  background: linear-gradient(220deg,#EC5252 -30%,#6E1A52 70%);
+  font-size: 30px;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.secondary_nav {
+  overflow: hidden;
+  background-color: #007791;
+  font-size: 13px;
+  color: white;
+  text-align: center;
+  padding: 2px;
+  align-content: center;
+}
+
+.big_block{
+  background: linear-gradient(#29303B,#29303B,#29303B);
+  color: #fff;
+  padding: 20px;
 }

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Recommendations</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style/recommendation.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+    <div class="topnav">
+        <h4>Online Courses Recommendtion Service</h4>
+    </div>
+    <div class="secondary_nav">
+        <h6>Keep your skills on point | Stay tuned to see latest course recommendations</h6>
+    </div>
+
+    {% if match_courses_data %}
+    <br>
+    <h3 style="text-align:center;"><b>RECOMMENDED ONLINE COURSES BASED ON YOUR SELECTION</b>
+    </h3>
+    <br>
+    <h5 class="big_block"><b>Courses based on Language, Levels and Ratings...</b></h5>
+    <h6 class="metadata">These courses are visible because you select : Language : <b>{{match_courses_data[0][14]}}
+        </b>, Level: <b>{{match_courses_data[0][10]}}</b></h6></br>
+
+    <div class="suggestionContainer">
+        {% for course in match_courses_data %}
+
+        <div class="card" style="background-color:#EEE">
+            <div class="card-body">
+                <h6 class="card-title"><b>{{course[1]}}</b></h6>
+                <hr>
+                <p class="card-text p-y-1">
+                    Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
+                </p>
+                <p class="card-text p-y-1">
+                    Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
+                </p>
+                <p class="card-text p-y-1">
+                    Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>{{course[13]}}</b>
+                    {% for n in range((course[13])|int) %}
+                    <span class="fa fa-star checked"></span>
+                    {% endfor %}
+                </p>
+                <p class="card-text p-y-1">
+                    Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
+                        {{course[10]}}</span>
+                </p>
+                <p class="card-text p-y-1">
+                    Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
+                </p>
+                <p class="card-text p-y-1">
+                    Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">{{course[15]}}</span>
+                </p>
+                <form action="/suggestions" method="post">
+                    <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
+                    <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+                        Courses</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    {% else %}
+
+    <div class="form-container">
+        <form action="" method="post">
+            <h3 style="color:Tomato;">No data found for this course...Please try other courses</h3>
+            <div class="form-group">
+                <br><br>
+                <input type="text" style="width:400px" class="form-control" required="true"
+                    placeholder="Enter Course Name" name="Name" onkeypress="return blockSpecialChar(event)">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" value="Submit">Show Courses</button>
+            </div>
+        </form>
+
+    </div>
+
+    <hr>
+    {% endif %}
+
+
+
+    {% if similar_courses_other_language %}
+    <hr>
+    <h4 class="big_block"><b>SIMILAR COURSES IN OTHER LANGUAGE</b></h4>
+    <h6 class="metadata">These courses are similar with Language other than
+        <b>{{match_courses_data[0][14]}}</b></h6>
+    <br>
+    <div class="suggestionContainer">
+        {% for course in similar_courses_other_language %}
+
+        <div class="card" style="background-color: #EEE">
+            <div class="card-body">
+                <h6 class="card-title"><b>{{course[1]}}</b></h6>
+                <hr>
+                <p class="card-text p-y-1">
+                    Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
+                </p>
+                <p class="card-text p-y-1">
+                    Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
+                </p>
+                <p class="card-text p-y-1">
+                    Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>{{course[13]}}</b>
+                    {% for n in range((course[13])|int) %}
+                    <span class="fa fa-star checked"></span>
+                    {% endfor %}
+                </p>
+                <p class="card-text p-y-1">
+                    Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
+                        {{course[10]}}</span>
+                </p>
+                <p class="card-text p-y-1">
+                    Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
+                </p>
+                <p class="card-text p-y-1">
+                    Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">{{course[15]}}</span>
+                </p>
+                <form action="/suggestions" method="post">
+                    <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
+                    <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+                        Courses</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+    {% endif %}
+
+
+
+    {% if similar_courses_other_levels %}
+    <hr>
+    <h4 class="big_block"><b>SIMILAR COURSES IN OTHER LEVELS</b></h4>
+    <h6 class="metadata">These courses are similar with Level other than
+        <b>{{match_courses_data[0][10]}}</b></h6>
+    <br>
+    <div class="suggestionContainer">
+        {% for course in similar_courses_other_levels %}
+
+        <div class="card" style="background-color: #EEE">
+            <div class="card-body">
+                <h6 class="card-title"><b>{{course[1]}}</b></h6>
+                <hr>
+                <p class="card-text p-y-1">
+                    Domain: &nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[3]}}</b>
+                </p>
+                <p class="card-text p-y-1">
+                    Duration:&nbsp;&nbsp;&nbsp;&nbsp;<b>{{course[11]}} hours </b>
+                </p>
+                <p class="card-text p-y-1">
+                    Rating:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>{{course[13]}}</b>
+                    {% for n in range((course[13])|int) %}
+                    <span class="fa fa-star checked"></span>
+                    {% endfor %}
+                </p>
+                <p class="card-text p-y-1">
+                    Level:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-level">
+                        {{course[10]}}</span>
+                </p>
+                <p class="card-text p-y-1">
+                    Language: <span class="badge badge-{{course[14]}}"> {{course[14]}}</span>
+                </p>
+                <p class="card-text p-y-1">
+                    Subtitle:&nbsp;&nbsp;&nbsp;&nbsp; <span class="badge badge-subtitle">{{course[15]}}</span>
+                </p>
+                <form action="/suggestions" method="post">
+                    <input type="hidden" name="selected_course" value="{{course[0]|safe}}">
+                    <button type=" submit" class="btn btn-primary" value="Submit" style="align-content: center;">Show
+                        Courses</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+    {% endif %}
+
+
+    <hr>
+    <button class="block" onclick="location.href='/';">Search Another Courses</button>
+    <hr>
+
+</body>
+
+</html>

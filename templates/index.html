@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style/mainpage.css') }}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript">
         function blockSpecialChar(e) {
             var k;
@@ -18,57 +18,30 @@
 </head>
 
 <body>
+    <div class="main-container">
+        <div class="topnav">
+            <h2>Online Courses Recommendtion Service</h2>
+        </div>
 
-    <div class="topnav">
-        <h2>Online Courses Recommendtion Service</h2>
-    </div>
-
-    <div class="form-container">
-        <h3>Welcome, You can serch for online courses or select course category from below</h3>
-        <form action="" method="post">
-            <div class="form-group">
-                <br><br>
-                <input type="text" style="width:400px" class="form-control" required="true"
-                    placeholder="Enter Course Name" name="Name" onkeypress="return blockSpecialChar(event)">
+        <div class="form-container">
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <h3>Welcome, You can serch for online courses or select course category from below</h3>
+                    <form action="" method="post">
+                        <div class="form-group searchbar-wrapper">
+                            <br><br>
+                            <input type="text" class="form-control search-input" required="true"
+                                placeholder="Enter Course Name" name="Name" onkeypress="return blockSpecialChar(event)">
+                            <button type="submit" class="search-button" value="Submit">
+                                <i class="fa fa-search" style="padding-bottom: 8px;"></i>
+                            </button>
+                        </div>
+                        <br><br>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary" value="Submit">Show Courses</button>
-            </div>
-            <br><br>
-        </form>
 
-        <h4>------------- OR Select course Category--------------</h4>
-
-        <form action="/category" method="post">
-            <div class="form-group">
-                <br><br>
-                <select style="width:400px" class="form-control" required="true" placeholder="Enter Course Category"
-                    name="Category" id="Category">
-                    <option value="Academics">Academics</option>
-                    <option value="Business">Business</option>
-                    <option value="Cloud Computing">Cloud Computing</option>
-                    <option value="Data Science">Data Science</option>
-                    <option value="Design">Design</option>
-                    <option value="Development">Development</option>
-                    <option value="Finance&Accounting">Finance & Accounting</option>
-                    <option value="Human Resource">Human Resource</option>
-                    <option value="IT & Software">IT & Software</option>
-                    <option value="IT Operation">IT Operation</option>
-                    <option value="Language">Language</option>
-                    <option value="Leadership & Management">Leadership & Management</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Office Productivity">Office Productivity</option>
-                    <option value="Personal Development">Personal Development</option>
-                    <option value="Photography">Photography</option>
-                    <option value="Sales">Sales</option>
-                    <option value="Web Development">Web Development</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary" value="Submit">Show Courses</button>
-            </div>
-        </form>
-
+        </div>
     </div>
 </body>
 
