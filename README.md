@@ -40,6 +40,9 @@ or you can select category from list
 2. Front-End - HTML
 3. Database - MySQL DB hosted on AWS RDS  
 
+#### You can check dataset use for project in csv format at - [Dataset](./sample_dataset/online_courses_dataset.csv)  
+![]()
+or connnect to AWS RDS database
 ### AWS RDS Connection :  
 
 ##### host : 'aws-db.c870dqshvtvk.ap-south-1.rds.amazonaws.com'
@@ -51,3 +54,9 @@ or you can select category from list
 ##### database : 'dataset2'
 
 ##### table : udemy_courses
+
+#### You can use following URL to connect to AWS MySQL database through mysql client
+
+> mysql -h aws-db.c870dqshvtvk.ap-south-1.rds.amazonaws.com -P 3306 -u admin -p
+
+> passowrd: rootadmin
